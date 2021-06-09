@@ -1100,7 +1100,7 @@ class BertForVLPreTraining(BertPreTrainedModel):
         if masked_img_loss:
             img_loss = img_loss.unsqueeze(0)
         else:
-            img_loss = torch.zeros(1).cuda()
+            img_loss = torch.zeros(1).cuda() if torch.cuda.is_available() else torch.zeros(1)
 
         if masked_lm_labels is not None:
             masked_lm_loss = self.loss_fct(
@@ -1108,7 +1108,7 @@ class BertForVLPreTraining(BertPreTrainedModel):
                 masked_lm_labels.view(-1),
             ).unsqueeze(0)
         else:
-            masked_lm_loss = torch.zeros(1).cuda()
+            masked_lm_loss = torch.zeros(1).cuda() if torch.cuda.is_available() else torch.zeros(1)
 
         if (seq_relationship_score is not None) and (next_sentence_label is not None):
             next_sentence_loss = self.loss_fct(
@@ -1116,7 +1116,7 @@ class BertForVLPreTraining(BertPreTrainedModel):
                 next_sentence_label.view(-1)
             ).unsqueeze(0)
         else:
-            next_sentence_loss = torch.zeros(1).cuda()
+            next_sentence_loss = torch.zeros(1).cuda() if torch.cuda.is_available() else torch.zeros(1)
 
         if masked_img_loss or masked_lm_loss or next_sentence_loss:
             if output_all_encoded_layers:
